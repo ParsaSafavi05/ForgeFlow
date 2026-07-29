@@ -1,0 +1,9 @@
+# Binaries
+/bin/
+/build/
+
+# Environments
+.env
+
+# Logs
+*.log
