@@ -34,7 +34,6 @@ The project focuses on building a CI system from the ground up, including workfl
 
 ### Out of scope
 
-- Replacing mature CI platforms
 - Distributed execution
 - Hosted CI infrastructure
 - Repository hosting
