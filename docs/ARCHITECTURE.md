@@ -27,13 +27,19 @@ type Pipeline struct {
     Jobs map[string]Job
 }
 
+type Step struct {
+	Name string
+	Run  string
+}
+
 type Job struct {
     Name    string
-    Run     string            // command to execute
+    Run     []Step            // command run in order
     Needs   []string          // names of jobs that must succeed first
     Env     map[string]string
     Timeout time.Duration
     // later: Image string  (run inside this container image)
+    // later: Secrets []string  (names of env vars to mask)
 }
 
 type Status string // pending, running, success, failed, skipped, cancelled

@@ -67,6 +67,7 @@ A job is **ready** when it is `pending` and all of its dependencies are `success
 ## Failure Rules
 
 - If a job fails, every job that depends on it (directly or indirectly) becomes `skipped`.
+- If a step fails, the remaining steps of that job are not run and the job is marked `failed`.
 - Jobs that don't depend on the failed job keep running.
 - Optional `--fail-fast` flag: cancel everything as soon as one job fails.
 - The pipeline's final status is `success` only if every job succeeded.
@@ -82,14 +83,19 @@ A job is **ready** when it is `pending` and all of its dependencies are `success
 5. **Extensible.** Reporter, runner, and config format are separate pieces that can be swapped or extended. Docker is added as one more runner, not by rewriting the core.
 6. **Safe with secrets.** Registry passwords and tokens never appear in logs or reports.
 
-## Open Questions
+## Decisions
 
-The configuration format is **not decided yet**. The YAML examples in these docs are only illustrations. Things to decide before the first release:
+These choices shape the config format. Anything not listed here is still undecided.
 
-- **Steps inside a job.** Should a job be a single command, or a list of steps? Adding steps later would change the file format. A simple option is to support both a one-command shorthand and a list of steps.
-- **How a job chooses where it runs.** Local process or Docker container, and how the image is named.
-- **How image build and push are written.** Dedicated job kinds vs. plain commands.
-- **Secret handling.** Environment variables only, or something more.
+- **Jobs have steps.** A job has a list of `steps`, and each step is one command. Steps run in order, and the first failing step fails the job and skips the remaining steps. A one-command shorthand can be added later without breaking anything.
+- **Dependencies use `needs`.** It lists the jobs that must succeed first.
+- **Unknown fields are rejected.** A typo like `imge:` is an error, not silently ignored. This also means new fields can be added later without breaking old files.
+- **Job names** may contain only letters, digits, `-` and `_`. They end up in log file names and container names.
+- **Defaults:** no timeout, and the working directory is the project root.
+- **Container execution (later):** an optional `image` field on a job. If absent, the job runs locally. This is not part of the first parser. See [docker.md](docker.md).
+- **Image build and push (later):** until Milestones 8 and 9, users write `docker build` and `docker push` as normal steps. Dedicated job kinds are added later as optional new keys.
+- **Secrets:** the pipeline file names the environment variable that holds a secret, never the value. ForgeFlow reads it at run time, masks it in logs, and fails early if it is not set.
+
 
 ## Out of Scope
 

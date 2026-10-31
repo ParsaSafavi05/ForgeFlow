@@ -4,11 +4,15 @@ These are the steps which should be taken carefully in order to develop ForgeFlo
 
 ## Milestone 1: Config (provisional)
 
+- [x] Decide the format questions (see Decisions in [design.md](design.md))
 - [ ] Define `Pipeline` and `Job` structs
 - [ ] Parse `forgeflow.yaml`
-- [ ] Validate: missing fields, duplicate names, unknown dependencies
+- [ ] Reject unknown fields
+- [ ] Validate: at least one job, at least one step per job, non-empty commands
+- [ ] Validate: job names use only allowed characters
+- [ ] Validate: unknown dependencies, self-dependency
 - [ ] Unit tests with valid and invalid files
-- [ ] Decide the open questions listed in [design.md](DESIGN.md)
+
 
 ## Milestone 2: Graph
 
